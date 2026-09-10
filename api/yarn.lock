@@ -460,6 +460,11 @@
     path-to-regexp "8.4.2"
     swagger-ui-dist "5.32.14"
 
+"@nestjs/terminus@^12.0.0":
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-12.0.0.tgz#7b2524c0f6f93b98572e7bd6240e4359d32abb0c"
+  integrity sha512-UCMJtBDc3/SBTu2yXQg/7OmQghGH9upVU56USS/UQoLKcnQkKM03MHP+VQ4oPz+KreI4wu+At9RNgSIpo/dCFg==
+
 "@nestjs/testing@^12.0.1":
   version "12.0.1"
   resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-12.0.1.tgz#5d445da5222fb1f6d8a4180c7c43010bb2a251a6"

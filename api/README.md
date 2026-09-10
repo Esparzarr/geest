@@ -54,6 +54,29 @@ el volumen de datos.
 
 ## Endpoints
 
+### `GET /api/health`
+
+Estado del servicio. Comprueba que la API responda y que la conexión con
+MongoDB esté activa. No requiere autenticación.
+
+```bash
+curl -i http://localhost:4000/api/health
+```
+
+**200 OK**
+
+```json
+{
+  "status": "ok",
+  "info": { "mongodb": { "status": "up", "responseTime": 3 } },
+  "error": {},
+  "details": { "mongodb": { "status": "up", "responseTime": 3 } }
+}
+```
+
+Devuelve **503** con el detalle del fallo si MongoDB no responde, para que un
+balanceador deje de enviarle tráfico a la instancia.
+
 ### `POST /api/auth/login`
 
 Autenticación con usuario y contraseña. Devuelve un JWT.
