@@ -14,7 +14,6 @@
     "lint:fix": "yarn --cwd web lint:fix && yarn --cwd api lint:fix",
     "format": "yarn --cwd web format && yarn --cwd api format",
     "format:check": "yarn --cwd web format:check && yarn --cwd api format:check",
-    "test": "yarn --cwd api test",
     "setup": "yarn --cwd web install && yarn --cwd api install",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
