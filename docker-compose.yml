@@ -3,10 +3,16 @@ services:
     image: mongo:7
     container_name: geest-mongo
     restart: unless-stopped
+    environment:
+      # Base contra la que se ejecutan los scripts de docker-entrypoint-initdb.d
+      MONGO_INITDB_DATABASE: geest
     ports:
+      # 27018 en el host para no chocar con un MongoDB local en el 27017
       - '27018:27017'
     volumes:
       - mongo-data:/data/db
+      # Siembra el usuario de prueba en la primera inicialización del volumen
+      - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     healthcheck:
       test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping')"]
       interval: 10s
