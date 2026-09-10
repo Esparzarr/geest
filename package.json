@@ -15,7 +15,11 @@
     "format": "yarn --cwd web format && yarn --cwd api format",
     "format:check": "yarn --cwd web format:check && yarn --cwd api format:check",
     "test": "yarn --cwd api test",
-    "setup": "yarn --cwd web install && yarn --cwd api install"
+    "setup": "yarn --cwd web install && yarn --cwd api install",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "db:logs": "docker compose logs -f mongo"
   },
   "devDependencies": {
     "concurrently": "^10.0.5"
