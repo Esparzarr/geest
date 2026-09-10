@@ -1,114 +1,110 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API — Geest
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend en **Node.js + TypeScript** con **NestJS 12** y **MongoDB** (Mongoose).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requisitos
 
-## Description
+- Node.js 20+
+- Docker (para la base de datos)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Puesta en marcha
 
 ```bash
-$ yarn install
+yarn install
+cp .env.example .env   # ajustar si hace falta
+
+yarn --cwd .. db:up    # levanta MongoDB con el usuario ya sembrado
+yarn start:dev         # API en http://localhost:4000
 ```
 
-## Compile and run the project
+MongoDB corre en un contenedor mapeado al puerto **27018** del host, no al 27017.
+Es a propósito: así no choca con una instalación local de MongoDB que ya use el
+puerto por defecto, y los datos del proyecto quedan aislados de cualquier otra base.
+
+Los datos persisten en un volumen de Docker entre reinicios. Para empezar de cero:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+yarn --cwd .. db:reset   # borra el volumen y vuelve a sembrar
 ```
 
-## Run tests
+## Documentación interactiva (Swagger)
+
+Con la API corriendo:
+
+**<http://localhost:4000/docs>**
+
+Desde ahí se puede probar el endpoint sin curl ni Postman: abrir `POST /api/auth/login`,
+pulsar **Try it out** (el body ya viene relleno con el usuario de prueba) y **Execute**.
+Muestra el código de respuesta, el body y los headers.
+
+El contrato en formato OpenAPI 3.0 está en <http://localhost:4000/docs-json>, por si se
+quiere importar en Postman o Insomnia.
+
+## Usuario de prueba
+
+La API **no expone registro ni contiene código que cree usuarios**: solo los lee
+para autenticar. El usuario de prueba se siembra directamente en MongoDB mediante
+`docker/mongo-init.js`, que la imagen oficial ejecuta la primera vez que inicializa
+el volumen de datos.
+
+| Campo      | Valor       |
+| ---------- | ----------- |
+| Usuario    | `testuser`  |
+| Contraseña | `Test1234!` |
+
+## Endpoints
+
+### `POST /api/auth/login`
+
+Autenticación con usuario y contraseña. Devuelve un JWT.
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+curl -X POST http://localhost:4000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","password":"Test1234!"}'
 ```
 
-## Deployment
+**200 OK**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": { "id": "...", "username": "testuser" }
+}
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+| Código | Cuándo                                                      |
+| ------ | ----------------------------------------------------------- |
+| `200`  | Credenciales correctas                                      |
+| `401`  | Usuario inexistente o contraseña incorrecta (mismo mensaje) |
+| `400`  | Campos faltantes, vacíos o propiedades no declaradas        |
+
+Para proteger un endpoint nuevo basta con `@UseGuards(JwtAuthGuard)`; el token
+viaja en `Authorization: Bearer <token>`.
+
+## Variables de entorno
+
+Ver `.env.example`. `.env` está gitignoreado.
+
+| Variable         | Descripción                           |
+| ---------------- | ------------------------------------- |
+| `MONGODB_URI`    | Conexión a MongoDB                    |
+| `JWT_SECRET`     | Clave de firma de los tokens          |
+| `JWT_EXPIRES_IN` | Vigencia del token (por defecto `1d`) |
+| `PORT`           | Puerto HTTP (por defecto `4000`)      |
+
+## Scripts
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+yarn start:dev    # desarrollo con recarga
+yarn build        # compila a dist/
+yarn lint
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Notas de seguridad
 
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Las contraseñas se guardan con **bcrypt** (10 rondas), nunca en texto plano.
+- El campo `password` tiene `select: false`: no sale en las consultas salvo
+  que se pida explícitamente.
+- Login fallido devuelve el mismo mensaje exista o no el usuario, para no
+  permitir enumerar usuarios registrados.
