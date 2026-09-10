@@ -1,0 +1,15 @@
+{
+  "name": "geest",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "yarn --cwd web dev",
+    "build": "yarn --cwd web build",
+    "preview": "yarn --cwd web preview",
+    "lint": "yarn --cwd web lint",
+    "lint:fix": "yarn --cwd web lint:fix",
+    "format": "yarn --cwd web format",
+    "format:check": "yarn --cwd web format:check",
+    "setup": "yarn --cwd web install"
+  }
+}
