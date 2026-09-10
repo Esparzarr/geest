@@ -3,13 +3,21 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "yarn --cwd web dev",
-    "build": "yarn --cwd web build",
+    "dev": "concurrently -n web,api -c cyan,magenta \"yarn dev:web\" \"yarn dev:api\"",
+    "dev:web": "yarn --cwd web dev",
+    "dev:api": "yarn --cwd api start:dev",
+    "build": "yarn build:web && yarn build:api",
+    "build:web": "yarn --cwd web build",
+    "build:api": "yarn --cwd api build",
     "preview": "yarn --cwd web preview",
-    "lint": "yarn --cwd web lint",
-    "lint:fix": "yarn --cwd web lint:fix",
-    "format": "yarn --cwd web format",
-    "format:check": "yarn --cwd web format:check",
-    "setup": "yarn --cwd web install"
+    "lint": "yarn --cwd web lint && yarn --cwd api lint",
+    "lint:fix": "yarn --cwd web lint:fix && yarn --cwd api lint:fix",
+    "format": "yarn --cwd web format && yarn --cwd api format",
+    "format:check": "yarn --cwd web format:check && yarn --cwd api format:check",
+    "test": "yarn --cwd api test",
+    "setup": "yarn --cwd web install && yarn --cwd api install"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }
