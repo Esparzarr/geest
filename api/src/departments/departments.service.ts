@@ -29,4 +29,14 @@ export class DepartmentsService {
       throw error
     }
   }
+
+  async findAll(): Promise<DepartmentResponseDto[]> {
+    const departments = await this.departmentModel.find()
+    return departments.map((department) => ({
+      id: department.id as string,
+      name: department.name,
+      createdAt: department.createdAt,
+      updatedAt: department.updatedAt,
+    }))
+  }
 }
