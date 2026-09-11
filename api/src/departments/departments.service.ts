@@ -70,4 +70,13 @@ export class DepartmentsService {
       updatedAt: department.updatedAt,
     }
   }
+
+  async deleteById(id: string): Promise<void> {
+    const department = await this.departmentModel.findByIdAndDelete(id)
+
+    // findByIdAndDelete devuelve null si ningún departamento tiene ese id
+    if (!department) {
+      throw new NotFoundException('Departamento no encontrado')
+    }
+  }
 }

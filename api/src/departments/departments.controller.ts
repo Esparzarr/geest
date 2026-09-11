@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+  Delete,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
 import { DepartmentsService } from './departments.service.js'
@@ -33,5 +45,11 @@ export class DepartmentsController {
     @Body() dto: UpdateDepartmentDto,
   ): Promise<DepartmentResponseDto> {
     return this.departments.updateById(id, dto)
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteById(@Param('id', new ParseUUIDPipe({ version: '7' })) id: string): Promise<void> {
+    return this.departments.deleteById(id)
   }
 }
