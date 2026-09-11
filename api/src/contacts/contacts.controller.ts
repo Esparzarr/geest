@@ -1,9 +1,25 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
 import { ContactsService } from './contacts.service.js'
 import { ContactResponseDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
+
+const IdParam = new ParseUUIDPipe({
+  version: '7',
+  exceptionFactory: () => new NotFoundException('Contacto no encontrado'),
+})
 
 @ApiTags('contacts')
 @ApiBearerAuth()
@@ -16,5 +32,11 @@ export class ContactsController {
   @ApiCreatedResponse({ type: ContactResponseDto })
   async create(@Body() dto: CreateContactDto): Promise<ContactResponseDto> {
     return this.contacts.create(dto)
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteById(@Param('id', IdParam) id: string): Promise<void> {
+    return this.contacts.deleteById(id)
   }
 }

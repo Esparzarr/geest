@@ -50,4 +50,12 @@ export class ContactsService {
       throw error
     }
   }
+
+  async deleteById(id: string): Promise<void> {
+    const contact = await this.contactsModel.findByIdAndDelete(id)
+
+    if (!contact) {
+      throw new NotFoundException('Contacto no encontrado')
+    }
+  }
 }
