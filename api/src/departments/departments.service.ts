@@ -1,8 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { CreateDepartmentDto } from './dto/create-department.dto.js'
 import { DepartmentResponseDto } from './dto/department-response.dto.js'
+import { UpdateDepartmentDto } from './dto/update-department.dto.js'
 import { Department, DepartmentDocument } from './schemas/department.schema.js'
 
 @Injectable()
@@ -38,5 +39,35 @@ export class DepartmentsService {
       createdAt: department.createdAt,
       updatedAt: department.updatedAt,
     }))
+  }
+
+  async updateById(id: string, dto: UpdateDepartmentDto): Promise<DepartmentResponseDto> {
+    let department: DepartmentDocument | null
+
+    try {
+      department = await this.departmentModel.findByIdAndUpdate(
+        id,
+        { name: dto.name },
+        { new: true },
+      )
+    } catch (error) {
+      // 11000: MongoDB rechazó el nombre porque ya existe (índice único)
+      if ((error as { code?: number }).code === 11000) {
+        throw new ConflictException('Ya existe un departamento con ese nombre')
+      }
+      throw error
+    }
+
+    // findByIdAndUpdate devuelve null si ningún departamento tiene ese id
+    if (!department) {
+      throw new NotFoundException('Departamento no encontrado')
+    }
+
+    return {
+      id: department.id as string,
+      name: department.name,
+      createdAt: department.createdAt,
+      updatedAt: department.updatedAt,
+    }
   }
 }
