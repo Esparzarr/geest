@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
 import { AuthModule } from './auth/auth.module.js'
+import { DepartmentsModule } from './departments/departments.module.js'
 import { HealthModule } from './health/health.module.js'
 import { UsersModule } from './users/users.module.js'
 
@@ -14,9 +15,10 @@ import { UsersModule } from './users/users.module.js'
         uri: config.getOrThrow<string>('MONGODB_URI'),
       }),
     }),
-    UsersModule,
-    AuthModule,
     HealthModule,
+    AuthModule,
+    UsersModule,
+    DepartmentsModule,
   ],
 })
 export class AppModule {}

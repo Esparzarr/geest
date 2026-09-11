@@ -14,6 +14,7 @@ async function bootstrap() {
       whitelist: true, // descarta propiedades no declaradas en el DTO
       forbidNonWhitelisted: true, // y responde 400 si llegan
       transform: true,
+      stopAtFirstError: true, // un solo mensaje por campo: el del primer decorador que falla
     }),
   )
 
