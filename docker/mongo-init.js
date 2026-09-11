@@ -9,6 +9,7 @@
 const now = new Date()
 
 db.users.insertOne({
+  _id: UUID('01a08de5-ef21-7c97-bc87-920a538aeda1'),
   username: 'testuser',
   password: '$2b$10$/1QNxJDQoV77l38tXmJTIOG5MBlfxe2NkTfydYdDB2UHaau25J/Aa',
   createdAt: now,

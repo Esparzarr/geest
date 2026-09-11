@@ -92,7 +92,7 @@ curl -X POST http://localhost:4000/api/auth/login \
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIs...",
-  "user": { "id": "...", "username": "testuser" }
+  "user": { "id": "01a08de5-ef21-7c97-bc87-920a538aeda1", "username": "testuser" }
 }
 ```
 

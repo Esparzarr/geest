@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 export class AuthUserDto {
-  @ApiProperty({ example: '6aa2fff540ade3d83f371faf', description: 'Identificador en MongoDB' })
+  @ApiProperty({
+    example: '01a08de5-ef21-7c97-bc87-920a538aeda1',
+    description: 'Identificador del usuario',
+  })
   id: string
 
   @ApiProperty({ example: 'testuser' })
