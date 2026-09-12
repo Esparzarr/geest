@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   NotFoundException,
@@ -9,6 +10,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
@@ -16,6 +18,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
 import { ContactsService } from './contacts.service.js'
 import { ContactResponseDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
+import { FindContactsDto } from './dto/find-contacts.dto.js'
 import { UpdateContactDto } from './dto/update-contacts.dto.js'
 
 const IdParam = new ParseUUIDPipe({
@@ -34,6 +37,12 @@ export class ContactsController {
   @ApiCreatedResponse({ type: ContactResponseDto })
   async create(@Body() dto: CreateContactDto): Promise<ContactResponseDto> {
     return this.contacts.create(dto)
+  }
+
+  @Get()
+  @ApiOkResponse({ type: [ContactResponseDto] })
+  async findAll(@Query() query: FindContactsDto): Promise<ContactResponseDto[]> {
+    return this.contacts.findAll(query)
   }
 
   @Patch(':id')

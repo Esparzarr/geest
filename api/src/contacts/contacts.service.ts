@@ -5,10 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { isUUID } from 'class-validator'
+import { Model, QueryFilter } from 'mongoose'
 import { Department, DepartmentDocument } from '../departments/schemas/department.schema.js'
 import { ContactResponseDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
+import { FindContactsDto } from './dto/find-contacts.dto.js'
 import { Contacts, ContactsDocument } from './schemas/contacts.schema.js'
 import { UpdateContactDto } from './dto/update-contacts.dto.js'
 
@@ -55,6 +57,46 @@ export class ContactsService {
       }
       throw error
     }
+  }
+
+  async findAll(query: FindContactsDto): Promise<ContactResponseDto[]> {
+    const filter: QueryFilter<ContactsDocument> = {}
+
+    // Coincidencia parcial en el nombre, sin distinguir mayúsculas
+    if (query.search) {
+      filter.name = { $regex: escapeRegExp(query.search), $options: 'i' }
+    }
+
+    // Uno o varios departamentos, por id o por nombre
+    if (query.department?.length) {
+      const ids = query.department.filter((value) => isUUID(value))
+      const names = query.department.filter((value) => !isUUID(value))
+
+      if (names.length) {
+        // La colación hace que el nombre no distinga mayúsculas, igual que en departamentos
+        const departments = await this.departmentModel
+          .find({ name: { $in: names } })
+          .collation({ locale: 'es', strength: 2 })
+        ids.push(...departments.map((department) => department.id as string))
+      }
+
+      filter.department = { $in: ids }
+    }
+
+    const contacts = await this.contactsModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .populate<{ department: DepartmentDocument }>('department')
+
+    return contacts.map((contact) => ({
+      id: contact.id as string,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      department: { id: contact.department.id as string, name: contact.department.name },
+      createdAt: contact.createdAt,
+      updatedAt: contact.updatedAt,
+    }))
   }
 
   async deleteById(id: string): Promise<void> {
@@ -106,4 +148,9 @@ export class ContactsService {
       updatedAt: contact.updatedAt,
     }
   }
+}
+
+// Sin esto, un "(" o un "*" en la búsqueda rompería la expresión regular
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
