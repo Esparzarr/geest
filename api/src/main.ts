@@ -8,6 +8,7 @@ async function bootstrap() {
 
   // Todas las rutas de la API quedan bajo /api
   app.setGlobalPrefix('api')
+  app.enableCors()
 
   app.useGlobalPipes(
     new ValidationPipe({
