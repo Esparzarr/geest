@@ -1,10 +1,16 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Department, DepartmentDocument } from '../departments/schemas/department.schema.js'
 import { ContactResponseDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
 import { Contacts, ContactsDocument } from './schemas/contacts.schema.js'
+import { UpdateContactDto } from './dto/update-contacts.dto.js'
 
 @Injectable()
 export class ContactsService {
@@ -56,6 +62,48 @@ export class ContactsService {
 
     if (!contact) {
       throw new NotFoundException('Contacto no encontrado')
+    }
+  }
+
+  async updateById(id: string, dto: UpdateContactDto): Promise<ContactResponseDto> {
+    if (dto.department) {
+      const newDepartment = await this.departmentModel.findById(dto.department)
+      if (!newDepartment) throw new NotFoundException('Departamento no encontrado')
+    }
+
+    let contact: ContactsDocument | null
+
+    try {
+      contact = await this.contactsModel.findByIdAndUpdate(
+        id,
+        { ...dto },
+        { new: true, runValidators: true },
+      )
+    } catch (error) {
+      if ((error as { code?: number }).code === 11000) {
+        throw new ConflictException('Ya existe un contacto con el mismo correo')
+      }
+      if ((error as { name?: string }).name === 'ValidationError') {
+        throw new BadRequestException('Datos inválidos')
+      }
+      throw error
+    }
+
+    if (!contact) {
+      throw new NotFoundException('Contacto no encontrado')
+    }
+
+    const department = await this.departmentModel.findById(contact.department)
+    if (!department) throw new NotFoundException('Departamento no encontrado')
+
+    return {
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      department: { id: department.id as string, name: department.name },
+      createdAt: contact.createdAt,
+      updatedAt: contact.updatedAt,
     }
   }
 }

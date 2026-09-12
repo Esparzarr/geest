@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, Schema as MongooseSchema, Types } from 'mongoose'
 import { v7 as uuidv7 } from 'uuid'
+import { Department } from '../../departments/schemas/department.schema.js'
 
 export type ContactsDocument = HydratedDocument<Contacts>
 
@@ -18,8 +19,8 @@ export class Contacts {
   @Prop({ required: false })
   phone?: string
 
-  @Prop({ required: true })
-  department: string
+  @Prop({ type: MongooseSchema.Types.UUID, ref: Department.name, required: true })
+  department: Types.UUID
 
   createdAt: Date
   updatedAt: Date
