@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { Contacts, ContactsDocument } from '../contacts/schemas/contacts.schema.js'
 import { CreateDepartmentDto } from './dto/create-department.dto.js'
 import { DepartmentResponseDto } from './dto/department-response.dto.js'
 import { UpdateDepartmentDto } from './dto/update-department.dto.js'
@@ -11,6 +12,8 @@ export class DepartmentsService {
   constructor(
     @InjectModel(Department.name)
     private readonly departmentModel: Model<DepartmentDocument>,
+    @InjectModel(Contacts.name)
+    private readonly contactsModel: Model<ContactsDocument>,
   ) {}
 
   async create(dto: CreateDepartmentDto): Promise<DepartmentResponseDto> {
@@ -72,6 +75,14 @@ export class DepartmentsService {
   }
 
   async deleteById(id: string): Promise<void> {
+    // Un contacto siempre exige departamento, así que borrar uno en uso
+    // dejaría contactos apuntando a un departamento que ya no existe.
+    const contacts = await this.contactsModel.countDocuments({ department: id })
+
+    if (contacts > 0) {
+      throw new ConflictException('No se puede eliminar un departamento con contactos asignados')
+    }
+
     const department = await this.departmentModel.findByIdAndDelete(id)
 
     // findByIdAndDelete devuelve null si ningún departamento tiene ese id
