@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import useHook from './useHook'
 
 export default function LoginPage() {
-  const { formik, isPending, error, user } = useHook()
+  const { formik, isPending, error } = useHook()
 
   return (
     <Box
@@ -37,7 +37,6 @@ export default function LoginPage() {
           </Stack>
 
           {error && <Alert severity="error">{error}</Alert>}
-          {user && <Alert severity="success">Hola, {user.username}</Alert>}
 
           <TextField
             name="username"

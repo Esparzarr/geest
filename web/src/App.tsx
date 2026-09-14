@@ -1,7 +1,7 @@
-import LoginPage from 'src/pages/auth/LoginPage'
+import Router from 'src/routes'
 
 function App() {
-  return <LoginPage />
+  return <Router />
 }
 
 export default App
