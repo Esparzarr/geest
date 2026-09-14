@@ -4,3 +4,8 @@ export interface DepartmentsResponse {
   createdAt: string
   updatedAt: string
 }
+
+export interface CreateDepartmentPros {
+  id?: string
+  name: string
+}
