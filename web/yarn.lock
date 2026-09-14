@@ -875,6 +875,11 @@ caniuse-lite@^1.0.30001810:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001810.tgz#4970b477dea3278374de9bc43aa8f5d39fc3cda2"
   integrity sha512-TITQPUkaz+aVk5GL6NhOdwk1aEaNTSDPsGFWrTuhKGtjTF70jL/Oht2W4c6rXUe5fu7Ie19VIahAXHIIiWWNeg==
 
+clsx@^1.1.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
 clsx@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
@@ -1265,6 +1270,11 @@ globals@^17.12.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-17.12.0.tgz#910a368b8f093d3feb3f77a56dcefa05647d698e"
   integrity sha512-cezEd/DTyyht9cvSSURyygXPfy04GtWO/5e6ZPvH7fCtjKz9PYOmuawphw1Ctd1f6C+5JypXfGD7ahNMXvevBA==
 
+goober@^2.0.33:
+  version "2.1.19"
+  resolved "https://registry.yarnpkg.com/goober/-/goober-2.1.19.tgz#a4b4dcdbba9325b8c4d7380099f9f281f27c6a6f"
+  integrity sha512-U7veizMqxyKlM58+Z5j2ngJBH/r9siDmxpvNxSw0PylF6WQvrASJEZrxh1hidRBJc2jqoBVSyOban5u8m+6Rxg==
+
 gopd@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/gopd/-/gopd-1.2.0.tgz#89f56b8217bdbc8802bd299df6d7f1081d7e51a1"
@@ -1593,6 +1603,14 @@ node-releases@^2.0.54:
   version "2.0.55"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.55.tgz#c52faedb68001dcfe77495b5ed1ac5827a1788fc"
   integrity sha512-mIrE/Cw9y+9Au6dS5vDKDhQza9YvG6w+ZrS6X+ZzA7yFW/soAeaups4Qzn1bL6g5FVy8WtP79+0j82oPIbqRjQ==
+
+notistack@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-3.0.2.tgz#009799c3fccddeffac58565ba1657d27616dfabd"
+  integrity sha512-0R+/arLYbK5Hh7mEfR2adt0tyXJcCC9KkA2hc56FeWik2QN6Bm/S4uW+BjzDARsJth5u06nTjelSw/VSnB1YEA==
+  dependencies:
+    clsx "^1.1.0"
+    goober "^2.0.33"
 
 object-assign@^4.1.1:
   version "4.1.1"

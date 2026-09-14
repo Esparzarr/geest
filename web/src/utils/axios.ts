@@ -3,7 +3,12 @@ import { store } from 'src/redux/store'
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api'
 
-const axiosInstance = axios.create({ baseURL: API_URL })
+// indexes: null serializa los arreglos como ?department=a&department=b
+// En vez del ?department[]=a por defecto, que la API rechaza con 400
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  paramsSerializer: { indexes: null },
+})
 
 const FALLBACK_MESSAGE = 'La acción no pudo completarse. Inténtalo nuevamente.'
 

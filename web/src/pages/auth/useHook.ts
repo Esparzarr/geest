@@ -9,7 +9,6 @@ import { AuthService } from 'src/services/auth'
 
 const initialValues: LoginValues = { username: '', password: '' }
 
-/** Toda la lógica de la vista: formulario, envío a la API y entrada al sistema. */
 const useHook = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
