@@ -14,7 +14,6 @@ const useHook = () => {
   const [contactId, setContactId] = useState<string>('')
   const [editContactId, setEditContactId] = useState<string>('')
 
-  // El input responde al instante; solo la consulta espera, para no pedir una vez por tecla
   useEffect(() => {
     const timer = setTimeout(() => setSearchDebounced(search), 400)
     return () => clearTimeout(timer)
@@ -28,6 +27,7 @@ const useHook = () => {
     data: contacts,
     error: errorContacts,
     isLoading: loadingContacts,
+    isFetching: loadingList,
   } = ContactsService.GetContacts.useQuery(
     {
       department: department,
@@ -37,6 +37,9 @@ const useHook = () => {
       retry: false,
     },
   )
+
+  const hasFilters = searchDebounced !== '' || department.length > 0
+  const isEmpty = !loadingList && contacts?.length === 0
 
   const { mutate: onCreateContact, isPending: loadingCreateContact } =
     ContactsService.CreateContacts.useMutation({
@@ -150,6 +153,9 @@ const useHook = () => {
   }
 
   return {
+    loadingList,
+    hasFilters,
+    isEmpty,
     loading:
       loadingContacts ||
       loadingCreateContact ||
