@@ -23,6 +23,8 @@ const useHook = () => {
     retry: false,
   })
 
+  const isEmpty = !loadingList && departments?.length === 0
+
   const { mutate: onCreateDepartment, isPending: loadingCreateDepartment } =
     DepartmentsService.CreateDepartment.useMutation({
       retry: false,
@@ -110,6 +112,7 @@ const useHook = () => {
       loadingUpdateDepartment ||
       loadingDeleteDepartment,
     loadingList,
+    isEmpty,
     departments,
     departmentForm,
     isOpenCreate,

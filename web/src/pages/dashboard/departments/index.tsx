@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { ArrowLeft, Trash, UserRoundPen } from 'lucide-react'
+import { ArrowLeft, Building2, Trash, UserRoundPen } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { PATH_DASHBOARD } from 'src/routes/paths'
 import useHook from './useHok'
@@ -25,6 +25,7 @@ export default function DepartmentsPage() {
     departments,
     loading,
     loadingList,
+    isEmpty,
     departmentForm,
     isOpenCreate,
     openCreate,
@@ -75,46 +76,57 @@ export default function DepartmentsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loadingList
-                ? Array.from({ length: 3 }).map((_, rowIndex) => (
-                    <TableRow key={`skeleton-${rowIndex}`}>
-                      {Array.from({ length: 2 }).map((__, cellIndex) => (
-                        <TableCell key={`skeleton-${rowIndex}-${cellIndex}`} align="center">
-                          <Skeleton variant="text" />
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                : departments?.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell align="center">{row.name}</TableCell>
-                      <TableCell align="center">
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          sx={{ justifyContent: 'center', display: 'flex' }}
-                        >
-                          <Button
-                            startIcon={<UserRoundPen size={16} />}
-                            color="primary"
-                            onClick={() => handleSelectEdit(row)}
-                          >
-                            Editar
-                          </Button>
-                          <Button
-                            startIcon={<Trash size={16} />}
-                            color="error"
-                            onClick={() => handleSelectDelete(row.id)}
-                          >
-                            Eliminar
-                          </Button>
-                        </Stack>
+              {loadingList ? (
+                Array.from({ length: 3 }).map((_, rowIndex) => (
+                  <TableRow key={`skeleton-${rowIndex}`}>
+                    {Array.from({ length: 2 }).map((__, cellIndex) => (
+                      <TableCell key={`skeleton-${rowIndex}-${cellIndex}`} align="center">
+                        <Skeleton variant="text" />
                       </TableCell>
-                    </TableRow>
-                  ))}
+                    ))}
+                  </TableRow>
+                ))
+              ) : isEmpty ? (
+                <TableRow>
+                  <TableCell colSpan={2} align="center" sx={{ py: 6, border: 0 }}>
+                    <Stack spacing={1.5} sx={{ alignItems: 'center' }}>
+                      <Building2 size={40} color="#9e9e9e" />
+                      <Typography variant="subtitle1">Todavía no hay departamentos</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Crea el primero para empezar.
+                      </Typography>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                departments?.map((row) => (
+                  <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                    <TableCell align="center">{row.name}</TableCell>
+                    <TableCell align="center">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ justifyContent: 'center', display: 'flex' }}
+                      >
+                        <Button
+                          startIcon={<UserRoundPen size={16} />}
+                          color="primary"
+                          onClick={() => handleSelectEdit(row)}
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          startIcon={<Trash size={16} />}
+                          color="error"
+                          onClick={() => handleSelectDelete(row.id)}
+                        >
+                          Eliminar
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -146,15 +146,6 @@ export default function ContactsPage() {
                           ? 'Prueba con otro nombre o quita algún departamento.'
                           : 'Crea el primero para empezar.'}
                       </Typography>
-                      {!hasFilters && (
-                        <Button
-                          variant="outlined"
-                          onClick={openCreate}
-                          sx={{ textTransform: 'none', mt: 1 }}
-                        >
-                          Crear contacto
-                        </Button>
-                      )}
                     </Stack>
                   </TableCell>
                 </TableRow>
