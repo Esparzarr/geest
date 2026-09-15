@@ -4,10 +4,19 @@ import type { Model } from 'mongoose'
 import { AppModule } from './app.module.js'
 import { Contacts, type ContactsDocument } from './contacts/schemas/contacts.schema.js'
 import { Department, type DepartmentDocument } from './departments/schemas/department.schema.js'
+import { User, type UserDocument } from './users/schemas/user.schema.js'
 
 // Los contactos de ejemplo se reconocen por este dominio: --clean borra solo esos
 const DOMAIN = 'geest.test'
 const BATCH = 5000
+
+// El mismo usuario y hash que siembra docker/mongo-init.js en local. Hace falta aquí
+// porque ese script solo corre dentro del contenedor de Docker: en una base hospedada,
+// sin esto no habría con qué iniciar sesión.
+const TEST_USER = {
+  username: 'testuser',
+  password: '$2b$10$/1QNxJDQoV77l38tXmJTIOG5MBlfxe2NkTfydYdDB2UHaau25J/Aa',
+}
 
 const DEPARTMENTS = [
   'Ventas',
@@ -76,6 +85,7 @@ async function seed() {
   const app = await NestFactory.createApplicationContext(AppModule, { logger: ['error'] })
   const contactModel = app.get<Model<ContactsDocument>>(getModelToken(Contacts.name))
   const departmentModel = app.get<Model<DepartmentDocument>>(getModelToken(Department.name))
+  const userModel = app.get<Model<UserDocument>>(getModelToken(User.name))
   const seedEmails = { email: { $regex: `@${DOMAIN}$` } }
 
   if (process.argv.includes('--clean')) {
@@ -83,6 +93,17 @@ async function seed() {
     console.log(`Borrados ${deletedCount} contactos de ejemplo`)
   }
 
+  // El usuario de prueba se crea si no existe, para poder entrar a la app recién desplegada
+  const user = await userModel.updateOne(
+    { username: TEST_USER.username },
+    { $setOnInsert: { password: TEST_USER.password } },
+    { upsert: true },
+  )
+  console.log(
+    user.upsertedCount
+      ? `Usuario de prueba creado: ${TEST_USER.username}`
+      : 'Usuario de prueba: ya existía',
+  )
   // El nombre del departamento es único, así que se reutiliza si ya existe
   const names = DEPARTMENTS.slice(0, totalDepartments)
   for (const name of names) {
