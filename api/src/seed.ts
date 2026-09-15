@@ -104,11 +104,19 @@ async function seed() {
       ? `Usuario de prueba creado: ${TEST_USER.username}`
       : 'Usuario de prueba: ya existía',
   )
-  // El nombre del departamento es único, así que se reutiliza si ya existe
-  const names = DEPARTMENTS.slice(0, totalDepartments)
-  for (const name of names) {
-    await departmentModel.updateOne({ name }, { $setOnInsert: { name } }, { upsert: true })
-  }
+  // Los nombres de la lista alcanzan para un caso normal; a partir de ahí se numeran,
+  // porque el nombre es único y no puede repetirse
+  const names = Array.from({ length: totalDepartments }, (_, index) =>
+    index < DEPARTMENTS.length ? DEPARTMENTS[index] : `Departamento ${index + 1}`,
+  )
+
+  // El nombre del departamento es único, así que se reutiliza si ya existe.
+  // En una sola operación: con muchos departamentos, un upsert por viaje se nota
+  await departmentModel.bulkWrite(
+    names.map((name) => ({
+      updateOne: { filter: { name }, update: { $setOnInsert: { name } }, upsert: true },
+    })),
+  )
   const departments = await departmentModel.find({ name: { $in: names } })
   console.log(`Departamentos disponibles: ${departments.length}`)
 

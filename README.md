@@ -55,7 +55,7 @@ Para empezar de cero: `yarn db:reset`.
 ```bash
 yarn db:seed                    # 1000 contactos y 5 departamentos
 yarn db:seed --contacts=50000   # la cantidad que quieras
-yarn db:seed --departments=10   # hasta 10 departamentos
+yarn db:seed --departments=20   # la cantidad de departamentos que quieras
 yarn db:seed --clean            # borra los de ejemplo y vuelve a sembrar
 ```
 
