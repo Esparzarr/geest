@@ -62,9 +62,9 @@ export class ContactsService {
   async findAll(query: FindContactsDto): Promise<ContactsPageDto> {
     const filter: QueryFilter<ContactsDocument> = {}
 
-    // Coincidencia parcial en el nombre, sin distinguir mayúsculas
+    // Coincidencia parcial en el nombre, sin distinguir mayúsculas ni acentos
     if (query.search) {
-      filter.name = { $regex: escapeRegExp(query.search), $options: 'i' }
+      filter.name = { $regex: accentInsensitive(query.search), $options: 'i' }
     }
 
     // Uno o varios departamentos, por id o por nombre
@@ -166,4 +166,16 @@ export class ContactsService {
 // Sin esto, un "(" o un "*" en la búsqueda rompería la expresión regular
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+const ACCENT_GROUPS = ['aáàäâ', 'eéèëê', 'iíìïî', 'oóòöô', 'uúùüû', 'nñ', 'cç']
+
+function accentInsensitive(text: string): string {
+  return escapeRegExp(text)
+    .split('')
+    .map((letter) => {
+      const group = ACCENT_GROUPS.find((item) => item.includes(letter.toLowerCase()))
+      return group ? `[${group}]` : letter
+    })
+    .join('')
 }

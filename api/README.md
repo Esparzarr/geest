@@ -67,7 +67,7 @@ se pueden combinar:
 
 | Filtro       | Qué hace                                                            |
 | ------------ | ------------------------------------------------------------------- |
-| `search`     | Parte del nombre del contacto, sin distinguir mayúsculas            |
+| `search`     | Parte del nombre del contacto, sin distinguir mayúsculas ni acentos |
 | `department` | Filtra por departamento. Acepta **id o nombre**, y se puede repetir |
 | `limit`      | Cuántos contactos devolver: entre 1 y 100. Por defecto 10           |
 | `offset`     | Cuántos saltar. Por defecto 0                                       |
