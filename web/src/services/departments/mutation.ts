@@ -61,7 +61,8 @@ const DepartmentsService = {
         mutationFn: updateDepartment,
         onSuccess: (data, vars, result, ctx) => {
           queryClient.invalidateQueries({
-            predicate: (query) => query.queryKey[0] === 'departments',
+            predicate: (query) =>
+              query.queryKey[0] === 'departments' || query.queryKey[0] === 'contacts',
           })
 
           options?.onSuccess?.(data, vars, result, ctx)
