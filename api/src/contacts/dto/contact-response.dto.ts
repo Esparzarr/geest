@@ -30,3 +30,11 @@ export class ContactResponseDto {
   @ApiProperty({ example: '2026-09-11T02:32:16.840Z' })
   updatedAt: Date
 }
+
+export class ContactsPageDto {
+  @ApiProperty({ type: [ContactResponseDto] })
+  data: ContactResponseDto[]
+
+  @ApiProperty({ example: 1000, description: 'Total de contactos que cumplen los filtros' })
+  total: number
+}

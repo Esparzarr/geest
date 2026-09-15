@@ -16,7 +16,7 @@ import {
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
 import { ContactsService } from './contacts.service.js'
-import { ContactResponseDto } from './dto/contact-response.dto.js'
+import { ContactResponseDto, ContactsPageDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
 import { FindContactsDto } from './dto/find-contacts.dto.js'
 import { UpdateContactDto } from './dto/update-contacts.dto.js'
@@ -40,8 +40,8 @@ export class ContactsController {
   }
 
   @Get()
-  @ApiOkResponse({ type: [ContactResponseDto] })
-  async findAll(@Query() query: FindContactsDto): Promise<ContactResponseDto[]> {
+  @ApiOkResponse({ type: ContactsPageDto })
+  async findAll(@Query() query: FindContactsDto): Promise<ContactsPageDto> {
     return this.contacts.findAll(query)
   }
 

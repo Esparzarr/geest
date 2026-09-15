@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { isUUID } from 'class-validator'
 import { Model, QueryFilter } from 'mongoose'
 import { Department, DepartmentDocument } from '../departments/schemas/department.schema.js'
-import { ContactResponseDto } from './dto/contact-response.dto.js'
+import { ContactResponseDto, ContactsPageDto } from './dto/contact-response.dto.js'
 import { CreateContactDto } from './dto/create-contacts.dto.js'
 import { FindContactsDto } from './dto/find-contacts.dto.js'
 import { Contacts, ContactsDocument } from './schemas/contacts.schema.js'
@@ -59,7 +59,7 @@ export class ContactsService {
     }
   }
 
-  async findAll(query: FindContactsDto): Promise<ContactResponseDto[]> {
+  async findAll(query: FindContactsDto): Promise<ContactsPageDto> {
     const filter: QueryFilter<ContactsDocument> = {}
 
     // Coincidencia parcial en el nombre, sin distinguir mayúsculas
@@ -83,20 +83,33 @@ export class ContactsService {
       filter.department = { $in: ids }
     }
 
-    const contacts = await this.contactsModel
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .populate<{ department: DepartmentDocument }>('department')
+    // Sin un tope, una colección grande llegaría entera al navegador de una sola vez
+    const limit = query.limit ?? 10
+    const offset = query.offset ?? 0
 
-    return contacts.map((contact) => ({
-      id: contact.id as string,
-      name: contact.name,
-      email: contact.email,
-      phone: contact.phone,
-      department: { id: contact.department.id as string, name: contact.department.name },
-      createdAt: contact.createdAt,
-      updatedAt: contact.updatedAt,
-    }))
+    // El total se cuenta con los mismos filtros, para saber cuántas páginas hay
+    const [contacts, total] = await Promise.all([
+      this.contactsModel
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit)
+        .populate<{ department: DepartmentDocument }>('department'),
+      this.contactsModel.countDocuments(filter),
+    ])
+
+    return {
+      data: contacts.map((contact) => ({
+        id: contact.id as string,
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        department: { id: contact.department.id as string, name: contact.department.name },
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt,
+      })),
+      total,
+    }
   }
 
   async deleteById(id: string): Promise<void> {

@@ -69,13 +69,23 @@ se pueden combinar:
 | ------------ | ------------------------------------------------------------------- |
 | `search`     | Parte del nombre del contacto, sin distinguir mayúsculas            |
 | `department` | Filtra por departamento. Acepta **id o nombre**, y se puede repetir |
+| `limit`      | Cuántos contactos devolver: entre 1 y 100. Por defecto 10           |
+| `offset`     | Cuántos saltar. Por defecto 0                                       |
 
 ```bash
 curl "http://localhost:4000/api/contacts?search=jua&department=Ventas&department=Sistemas" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-Si nada coincide devuelve una lista vacía, no un error.
+La respuesta trae la página y el total que cumple los filtros, no un arreglo suelto:
+
+```json
+{ "data": [ ... ], "total": 1000 }
+```
+
+`total` cuenta todos los contactos que pasan los filtros, no los de la página: es lo que
+necesita el paginador para saber cuántas hay. Si nada coincide, `data` viene vacío y
+`total` en 0, no es un error.
 
 ## Validaciones
 
