@@ -1,32 +1,46 @@
-# React + TypeScript + Vite
+# Web — Geest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Frontend en **React 19 + TypeScript** con **Vite** y **MUI 9**. Consume la API del
+proyecto: no lee datos de ningún archivo local.
 
-Currently, two official plugins are available:
+## Puesta en marcha
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+yarn install
+yarn dev        # http://localhost:5173
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Necesita la API corriendo en `http://localhost:4000/api`. Para levantar API y frontend
+juntos, desde la raíz del repositorio: `yarn dev`.
+
+La URL de la API se toma de `VITE_API_URL`. Si no está definida se usa
+`http://localhost:4000/api`.
+
+## Scripts
+
+```bash
+yarn dev        # desarrollo con recarga
+yarn build      # typecheck y compilación a dist/
+yarn preview    # sirve lo ya compilado
+yarn lint
+yarn format
+```
+
+## Cómo está organizado
+
+```
+src/
+├── pages/        una carpeta por vista: index.tsx (maquetado) + useHook.ts (estado)
+├── services/     por dominio: services.ts (llamadas), mutation.ts (React Query), index.ts
+├── components/   piezas compartidas, como el modal
+├── redux/        la sesión, persistida con redux-persist
+├── schemas/      validaciones con Yup
+├── routes/       rutas y guard de sesión
+└── utils/        instancia de axios e interceptores
+```
+
+Las vistas nunca llaman a la API directamente: pasan por el hook de su dominio.
+**TanStack Query** cachea los datos del servidor y **Redux Toolkit** guarda la sesión.
+Los formularios usan **Formik + Yup**.
+
+Las decisiones técnicas y el despliegue están en el [README de la raíz](../README.md).

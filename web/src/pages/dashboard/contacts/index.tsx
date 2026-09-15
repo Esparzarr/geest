@@ -224,7 +224,7 @@ export default function ContactsPage() {
         titleCloseButton="Cancelar"
         titleSaveButton="Confirmar"
         colorCloseButton="inherit"
-        colorSaveButton="success"
+        colorSaveButton="error"
         disabled={loading}
         loading={loading}
         loadingLabel="Eliminando..."
