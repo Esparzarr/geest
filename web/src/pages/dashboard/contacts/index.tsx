@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ArrowLeft, Trash, UserRoundPen, Users } from 'lucide-react'
+import { ArrowLeft, Check, Trash, UserRoundPen, Users } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { PATH_DASHBOARD } from 'src/routes/paths'
 
@@ -98,6 +98,8 @@ export default function ContactsPage() {
                 onClick={() => handleToggleDepartment(item.id)}
                 color={selected ? 'primary' : 'default'}
                 variant={selected ? 'filled' : 'outlined'}
+                size="small"
+                icon={selected ? <Check size={14} /> : undefined}
               />
             )
           })}
