@@ -162,6 +162,8 @@ export default function DepartmentsPage() {
         colorCloseButton="inherit"
         colorSaveButton="success"
         disabled={loading}
+        loading={loading}
+        loadingLabel="Eliminando..."
       >
         <Typography>¿Estas seguro de eliminar el departamento?</Typography>
       </Modal>

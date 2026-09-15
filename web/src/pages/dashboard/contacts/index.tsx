@@ -226,6 +226,8 @@ export default function ContactsPage() {
         colorCloseButton="inherit"
         colorSaveButton="success"
         disabled={loading}
+        loading={loading}
+        loadingLabel="Eliminando..."
       >
         <Typography>¿Estas seguro de eliminar el contacto?</Typography>
       </Modal>
