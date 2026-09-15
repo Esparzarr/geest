@@ -1,4 +1,5 @@
 import type {
+  ContactsPage,
   ContactsPayload,
   ContactsResponse,
   CreateContactProps,
@@ -6,8 +7,8 @@ import type {
 } from 'src/@types/contacts'
 import axiosInstance from 'src/utils/axios'
 
-export async function getContacts(payload: ContactsPayload): Promise<ContactsResponse[]> {
-  const { data } = await axiosInstance.get<ContactsResponse[]>('/contacts', { params: payload })
+export async function getContacts(payload: ContactsPayload): Promise<ContactsPage> {
+  const { data } = await axiosInstance.get<ContactsPage>('/contacts', { params: payload })
   return data
 }
 

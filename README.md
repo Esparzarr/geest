@@ -99,6 +99,13 @@ el hook con el estado, las peticiones y los manejadores.
 siempre el listado, y otro por `department + createdAt`, que es el filtro habitual. Sin
 ellos, cada consulta recorre la colección completa y ordena en memoria.
 
+**El listado de contactos viene paginado.** El reto no pide paginación, pero sí pide que la
+aplicación siga siendo usable con un volumen alto de registros. Sin un tope, `GET /api/contacts`
+devolvería la colección entera en una sola respuesta y la tabla intentaría pintarla completa: el
+problema no es la consulta —para eso están los índices— sino el tamaño de la respuesta y la
+cantidad de filas en el DOM. La API acepta `limit` y `offset`, y devuelve el total junto a la
+página para que el paginador sepa cuántas hay.
+
 **Docker solo para la base en local.** En producción la base es MongoDB Atlas, y la API y el
 frontend están en Render.
 
@@ -124,7 +131,6 @@ y conviene saber que no estaban pedidas:
 - **Buscar también por email.**
 - **Conservar los filtros al volver a la lista.**
 - **Tests sobre las reglas de negocio.**
-- **Paginar el listado de contactos.**
 
 ## Estructura
 

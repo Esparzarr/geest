@@ -1,6 +1,7 @@
 import type { ApiClientError } from 'src/services/api/apiClient'
 import { createContact, deleteContact, getContacts, updateContact } from './services'
 import {
+  keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
@@ -8,6 +9,7 @@ import {
   type UseQueryOptions,
 } from '@tanstack/react-query'
 import type {
+  ContactsPage,
   ContactsPayload,
   ContactsResponse,
   CreateContactProps,
@@ -19,12 +21,15 @@ const ContactsService = {
   GetContacts: {
     useQuery: (
       params: ContactsPayload,
-      options?: Omit<UseQueryOptions<ContactsResponse[], ApiClientError>, 'queryKey' | 'queryFn'>,
+      options?: Omit<UseQueryOptions<ContactsPage, ApiClientError>, 'queryKey' | 'queryFn'>,
     ) => {
       return useQuery({
         queryKey: ['contacts', JSON.stringify(params)],
         queryFn: () => getContacts(params),
         staleTime: 1000 * 60 * 5,
+        // Al cambiar de página o de filtro se conserva el resultado anterior hasta que
+        // llega el nuevo: sin esto la tabla se vacía y la vista salta hacia arriba
+        placeholderData: keepPreviousData,
         ...options,
       })
     },

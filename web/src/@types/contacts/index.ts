@@ -1,6 +1,13 @@
 export interface ContactsPayload {
   search?: string
   department?: string[]
+  limit?: number
+  offset?: number
+}
+
+export interface ContactsPage {
+  data: ContactsResponse[]
+  total: number
 }
 
 export interface ContactsResponse {

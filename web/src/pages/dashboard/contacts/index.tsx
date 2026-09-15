@@ -17,6 +17,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
 } from '@mui/material'
@@ -31,11 +32,15 @@ export default function ContactsPage() {
     department,
     handleToggleDepartment,
     search,
-    setSearch,
+    handleSearch,
     contacts,
     loadingList,
     hasFilters,
     isEmpty,
+    total,
+    page,
+    setPage,
+    rowsPerPage,
     contactForm,
     isOpenCreate,
     openCreate,
@@ -78,7 +83,7 @@ export default function ContactsPage() {
             size="small"
             label="Buscador"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => handleSearch(event.target.value)}
             slotProps={{ htmlInput: { maxLength: 100 } }}
           />
         </Grid>
@@ -99,9 +104,7 @@ export default function ContactsPage() {
         </Stack>
 
         <Typography variant="body2" color="text.secondary">
-          {loading
-            ? 'Cargando...'
-            : `${contacts?.length ?? 0} ${contacts?.length === 1 ? 'contacto' : 'contactos'}`}
+          {loading ? 'Cargando...' : `${total} ${total === 1 ? 'contacto' : 'contactos'}`}
         </Typography>
 
         <TableContainer component={Paper}>
@@ -183,6 +186,18 @@ export default function ContactsPage() {
               )}
             </TableBody>
           </Table>
+
+          {!isEmpty && (
+            <TablePagination
+              component="div"
+              count={total}
+              page={page}
+              onPageChange={(_, newPage) => setPage(newPage)}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[rowsPerPage]}
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+            />
+          )}
         </TableContainer>
       </Stack>
 
