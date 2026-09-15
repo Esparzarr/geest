@@ -16,7 +16,8 @@
     "start:prod": "node dist/main",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "seed": "nest build && node dist/seed.js"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

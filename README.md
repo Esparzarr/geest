@@ -21,12 +21,12 @@ cp api/.env.example api/.env
 yarn dev       # levanta frontend y backend juntos
 ```
 
-| Servicio | URL                            |
-| -------- | ------------------------------ |
-| Frontend | <http://localhost:5173>        |
-| API      | <http://localhost:4000/api>    |
-| Swagger  | <http://localhost:4000/docs>   |
-| MongoDB  | `mongodb://127.0.0.1:27018`    |
+| Servicio | URL                          |
+| -------- | ---------------------------- |
+| Frontend | <http://localhost:5173>      |
+| API      | <http://localhost:4000/api>  |
+| Swagger  | <http://localhost:4000/docs> |
+| MongoDB  | `mongodb://127.0.0.1:27018`  |
 
 ### Usuario de prueba
 
@@ -36,6 +36,22 @@ yarn dev       # levanta frontend y backend juntos
 
 Se crea automáticamente al levantar la base (`docker/mongo-init.js`). La API no
 expone registro ni contiene código de creación de usuarios.
+
+## Datos de ejemplo
+
+Con la base levantada:
+
+```bash
+yarn db:seed                    # 1000 contactos y 5 departamentos
+yarn db:seed --contacts=50000   # la cantidad que quieras
+yarn db:seed --departments=10   # hasta 10 departamentos
+yarn db:seed --clean            # borra los de ejemplo y vuelve a sembrar
+```
+
+O por variable de entorno: `SEED_CONTACTS=50000 yarn db:seed`.
+
+Los contactos de ejemplo usan correos `contacto<n>@geest.test`: así nunca se repiten,
+y `--clean` borra solo esos, nunca los que hayas creado tú.
 
 ## Scripts
 
@@ -51,6 +67,7 @@ yarn db:up          # levanta MongoDB
 yarn db:down        # lo detiene
 yarn db:reset       # borra los datos y vuelve a levantar
 yarn db:logs        # sigue los logs del contenedor
+yarn db:seed        # carga datos de ejemplo
 ```
 
 ## Notas
