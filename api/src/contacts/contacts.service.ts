@@ -94,7 +94,7 @@ export class ContactsService {
         .sort({ createdAt: -1 })
         .skip(offset)
         .limit(limit)
-        .populate<{ department: DepartmentDocument }>('department'),
+        .populate<{ department: DepartmentDocument | null }>('department'),
       this.contactsModel.countDocuments(filter),
     ])
 
@@ -104,7 +104,11 @@ export class ContactsService {
         name: contact.name,
         email: contact.email,
         phone: contact.phone,
-        department: { id: contact.department.id as string, name: contact.department.name },
+        // El departamento puede faltar si se borró por fuera de la API: sin esto,
+        // un solo contacto huérfano haría que toda la lista respondiera 500
+        department: contact.department
+          ? { id: contact.department.id as string, name: contact.department.name }
+          : { id: '', name: 'Sin departamento' },
         createdAt: contact.createdAt,
         updatedAt: contact.updatedAt,
       })),
