@@ -133,6 +133,16 @@ yarn seed --contacts=1000   # datos de ejemplo (ver el README de la raíz)
 yarn lint
 ```
 
+## Mantener la API despierta
+
+`GET /api/health` es público, así que sirve de destino para un monitor externo. En el
+despliegue hay un cron en cron-job.org que lo llama cada 10 minutos (`*/10 * * * *`)
+para que Render no duerma la instancia del plan gratuito.
+
+Como el endpoint responde 503 cuando Mongo no contesta, el historial del cron sirve además
+como registro de disponibilidad: una ejecución fallida ahí significa que la API o la base
+no respondieron.
+
 ## Seguridad
 
 - Las contraseñas se guardan con **bcrypt** (10 rondas), nunca en texto plano.

@@ -11,8 +11,10 @@ por inicio de sesión.
 
 **Usuario de prueba:** `testuser` / `Test1234!`
 
-> La primera petición puede tardar hasta 50 segundos. Los servicios del plan gratuito de
-> Render se duermen tras unos minutos sin uso y tienen que despertar.
+> Los servicios del plan gratuito de Render se duermen tras unos minutos sin uso. Un cron
+> externo llama a `GET /api/health` cada 10 minutos para mantener la API despierta, así
+> que debería responder de inmediato. Si el cron llegara a fallar, la primera petición
+> puede tardar hasta 50 segundos.
 
 ## Qué hace
 
@@ -113,6 +115,16 @@ y conviene saber que no estaban pedidas:
 - **Notificaciones** al crear, editar o borrar.
 - **Panel de inicio y cerrar sesión.**
 - **Validaciones adicionales**: teléfono de 10 dígitos y límites de longitud.
+- **Un cron externo llama a `/api/health` cada 10 minutos** para que Render no duerma la
+  instancia y la primera carga no tarde.
+
+## Qué mejoraría con más tiempo
+
+- **Ordenar los departamentos alfabéticamente.**
+- **Buscar también por email.**
+- **Conservar los filtros al volver a la lista.**
+- **Tests sobre las reglas de negocio.**
+- **Paginar el listado de contactos.**
 
 ## Estructura
 
