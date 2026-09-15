@@ -87,7 +87,7 @@ const useHook = () => {
       email: '',
       department: '',
     },
-    validateOnMount: false,
+    validateOnMount: true,
     validationSchema: CreateContactSchema,
     onSubmit: (values) => {
       if (editContactId) {

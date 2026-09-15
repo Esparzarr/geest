@@ -50,7 +50,7 @@ const useHook = () => {
     initialValues: {
       name: '',
     },
-    validateOnMount: false,
+    validateOnMount: true,
     validationSchema: CreateDepartmentSchema,
     onSubmit: (values) => {
       if (editDepartmentId) {
