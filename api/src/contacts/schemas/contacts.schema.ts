@@ -28,3 +28,8 @@ export class Contacts {
 
 export const ContactsSchema = SchemaFactory.createForClass(Contacts)
 ContactsSchema.index({ email: 1 }, { unique: true, collation: { locale: 'es', strength: 2 } })
+
+// El listado siempre ordena por fecha, y el filtro habitual es el departamento:
+// sin estos índices, cada consulta recorre la colección entera y ordena en memoria
+ContactsSchema.index({ createdAt: -1 })
+ContactsSchema.index({ department: 1, createdAt: -1 })
